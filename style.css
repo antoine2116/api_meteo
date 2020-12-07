@@ -1,0 +1,72 @@
+.container {
+  max-width: 90% !important;
+}
+
+.form-field {
+  font-family: inherit;
+  width: 35%;
+  border: 0;
+  border-bottom: 2px solid white;
+  outline: 0;
+  font-size: 1.3rem;
+  color: white;
+  background: transparent;
+}
+
+.form-button {
+  margin-left: 15px;
+  padding: 10px 20px;
+  background: transparent;
+  color: white;
+  border-radius: 30px;
+  font-size: 20px;
+  border: 1px solid  white;
+}
+
+.form-button:hover {
+  transition: background-color 0.25s linear;
+  background-color: white;
+  color: #212529;
+}
+
+
+.form-button:active, .form-button:focus {
+    outline: none;
+    transform: none;
+}
+
+#cards-container {
+  margin-top: 15vh;
+}
+
+.card {
+  display: none; 
+  width: 12%;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: 0;
+}
+
+.card-header {
+  background-color: #454545;
+  color: white !important;
+}
+
+.card-temperature {
+  margin-top: 3vh;
+  font-size: 30px;
+  font-weight: 600;
+  color: #454545 !important;
+}
+
+.yellow {
+  color : #fac907;
+}
+
+.light-blue {
+  color: #59d6ff;
+}
+
+.grey {
+  color: #949494;
+}
