@@ -12,6 +12,11 @@ $(document).ready(function() {
             GetCoordonnees(ville);
         }
     });
+
+    // Event click button localisation
+    $('#btnLocalisation').click(function (){
+        GetLocalisation();
+    });
 });
 
 // Appel de l'API OpenCageData pour récupérer les coordonnées depuis le nom d'une ville
@@ -43,6 +48,50 @@ function GetCoordonnees(ville) {
             console.log(response.error);
         }
     });
+}
+
+// Appel de l'API OpenCageData pour récupérer le nom d'une ville depuis les coordonnées
+function GetVille(lat, lon) {
+    url = "https://api.opencagedata.com/geocode/v1/json?";
+    url += "q="+ lat + "%2C%20" + lon;
+    url += "&key=7e92aabac4bb49ee80b4996073df7f0e";
+    url += "&limit=1"
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: function (response) {
+            console.log(response);
+            if (response.results.length) {
+                GetMeteo(lat,lon);
+
+                var ville = response.results[0].components.city || response.results[0].components.town;
+                var pays = response.results[0].components.country;
+                var region = response.results[0].components.county || response.results[0].components.state ;
+                var newVal = `${ville}, ${region}, ${pays}`;
+                $('#iptVille').val(newVal);
+            }
+
+        },
+        error : function (response){
+            alert("Une erreur est survenue..");
+            console.log(response.error);
+        }
+    });
+}
+
+// Appel de l'API Geolocation pour récupérer la localisation de l'utilisateur
+function GetLocalisation() {
+    if ( navigator.geolocation ) {
+        // geolocalisation supportée
+        console.log("Geolocalisation supportée")
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+            GetVille(position.coords.latitude, position.coords.longitude)
+        });
+    } else {
+        // geolocalisation non supportée
+        console.log("Geolocalisation non supportée")
+    }
 }
 
 // Appel de l'API OpenWeater pour récupérer la météo de 7 prochains jours

@@ -23,6 +23,12 @@
   border: 1px solid  white;
 }
 
+.invisble-button {
+  background: transparent;
+  color: white;
+  border: none;
+}
+
 .form-button:hover {
   transition: background-color 0.25s linear;
   background-color: white;
