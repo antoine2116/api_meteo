@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- Scripts JS -->
+    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBygm71MheDMXIkHuBk1CBqGM60h4nypkE"></script>
     <script src="https://kit.fontawesome.com/7b2ae56766.js"></script>
     <script src="assets/js/jquery-3.5.1.min.js"></script>
     <script src="script.js"></script>
@@ -24,7 +25,9 @@
             </h1>
         </div>
         <div class="row justify-content-center" style="padding-top: 8vh">
-            <button class="invisble-button" id="btnLocalisation"><i class="fas fa-map-marker-alt"></i></button>
+            <button class="invisible-button" id="btnLocalisation">
+                <i class="fas fa-map-marker-alt"></i>
+            </button>
             <input class="form-field" id="iptVille" placeholder="Choisir une ville">
             <button class="form-button" id="btnValider">Valider</button>
         </div>
@@ -50,12 +53,6 @@
                 </div>
             </div>
         </div>
-
     </div>
-
-
-
 </body>
 </html>
-
-

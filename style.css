@@ -23,10 +23,17 @@
   border: 1px solid  white;
 }
 
-.invisble-button {
+.invisible-button {
   background: transparent;
   color: white;
   border: none;
+  font-size: 1.3rem;
+  margin-right: 10px;
+  padding-top: 3px;
+}
+
+.invisible-button:hover {
+  cursor: pointer !important;
 }
 
 .form-button:hover {
@@ -35,8 +42,7 @@
   color: #212529;
 }
 
-
-.form-button:active, .form-button:focus {
+button:active, button:focus {
     outline: none;
     transform: none;
 }

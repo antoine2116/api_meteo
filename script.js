@@ -17,6 +17,10 @@ $(document).ready(function() {
     $('#btnLocalisation').click(function (){
         GetLocalisation();
     });
+
+    // Initialise Autocomplete 
+    var element = document.getElementById("iptVille");  
+    var autocomplete = new google.maps.places.Autocomplete(element, { types: ['geocode'] });
 });
 
 // Appel de l'API OpenCageData pour récupérer les coordonnées depuis le nom d'une ville
@@ -34,14 +38,8 @@ function GetCoordonnees(ville) {
                 var lon = response.results[0].geometry.lng;
                 var lat = response.results[0].geometry.lat;
                 GetMeteo(lat,lon);
-
-                var ville = response.results[0].components.city;
-                var pays = response.results[0].components.country;
-                var region = response.results[0].components.county || response.results[0].components.state ;
-                var newVal = `${ville}, ${region}, ${pays}`;
-                $('#iptVille').val(newVal);
+                fillInput(response.results[0].components);
             }
-
         },
         error : function (response){
             alert("Une erreur est survenue..");
@@ -60,17 +58,10 @@ function GetVille(lat, lon) {
         url: url,
         type: "GET",
         success: function (response) {
-            console.log(response);
             if (response.results.length) {
                 GetMeteo(lat,lon);
-
-                var ville = response.results[0].components.city || response.results[0].components.town;
-                var pays = response.results[0].components.country;
-                var region = response.results[0].components.county || response.results[0].components.state ;
-                var newVal = `${ville}, ${region}, ${pays}`;
-                $('#iptVille').val(newVal);
+                fillInput(response.results[0].components);
             }
-
         },
         error : function (response){
             alert("Une erreur est survenue..");
@@ -170,3 +161,13 @@ function timeConverter(UNIX_timestamp){
     return time;
 }
 
+// Permet de remplir l'input avec les données complète de la ville
+function fillInput(details) {
+    if (details != null) {
+        var ville = details.city || details.town ||details.municipality;
+        var pays = details.country;
+        var region = details.county || details.state ;
+        var newVal = `${ville}, ${region}, ${pays}`;
+        $('#iptVille').val(newVal);
+    }
+}
