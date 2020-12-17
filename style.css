@@ -40,6 +40,7 @@
   transition: background-color 0.25s linear;
   background-color: white;
   color: #212529;
+  cursor: pointer;
 }
 
 button:active, button:focus {
@@ -81,4 +82,17 @@ button:active, button:focus {
 
 .grey {
   color: #949494;
+}
+
+.more-infos {
+  font-weight: bolder;
+  text-decoration: underline !important;
+}
+
+.more-infos:hover {
+  cursor: pointer;
+}
+
+.fa-map-marker-alt {
+  color: #d43d3d;
 }

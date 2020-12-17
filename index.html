@@ -1,58 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <title>API Météo</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Links CSS -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- FIN Links CSS -->
 
     <!-- Scripts JS -->
-    <script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBygm71MheDMXIkHuBk1CBqGM60h4nypkE"></script>
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBygm71MheDMXIkHuBk1CBqGM60h4nypkE"></script>
     <script src="https://kit.fontawesome.com/7b2ae56766.js"></script>
     <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
     <script src="script.js"></script>
+    <!-- FIN Scripts JS -->
 
-    <title>API Météo</title>
 </head>
 
 <body class="bg-dark">
     <div class="container">
-        <div class="row justify-content-center mt-3">
-            <h1 class="text-white text-uppercase display-3" style="letter-spacing: 5px">
+        <!-- Header -->
+        <div class="py-3 mx-auto text-center">
+            <h1 class="text-white text-uppercase display-3">
                 Api Météo
             </h1>
+            <p class="lead text-white pt-1">
+                Découvrez la météo de la ville de votre choix
+            </p>
+            <p class="lead text-white">
+                Une solution développée avec les API : Open Weather Map, Open Cage Data et Google Maps Places
+                <a class="more-infos" data-toggle="modal" data-target="#exampleModalCenter">
+                    plus d'infos..
+                </a>
+            </p>
         </div>
-        <div class="row justify-content-center" style="padding-top: 8vh">
+        <!-- FIN Header -->
+
+        <!-- Barre de recherche -->
+        <div class="row justify-content-center" style="padding-top: 5vh">
             <button class="invisible-button" id="btnLocalisation">
                 <i class="fas fa-map-marker-alt"></i>
             </button>
             <input class="form-field" id="iptVille" placeholder="Choisir une ville">
             <button class="form-button" id="btnValider">Valider</button>
         </div>
-        <div class="row justify-content-center" id="cards-container">
-            
-        </div>
+        <!-- FIN Barre de recherche -->
 
+        <!-- Résultats -->
+        <div class="row justify-content-center" id="cards-container">
+
+        </div>
+        <!-- FIN Résultats -->
+
+        <!-- Template d'affichage -->
         <div class="card" id="card-template">
             <div class="card-header text-center">
-                <!-- Jour -->
             </div>
             <div class="card-body">
                 <div class="row justify-content-center">
-                    <i class="fas fa-5x card-icon"></i> <!-- Icone -->
+                    <i class="fas fa-5x card-icon"></i>
                 </div>
                 <div class="row justify-content-center">
                     <label class="card-temperature">
-                        <span class="valeur-temperature">
-                            <!-- Température -->
-                        </span>
-                        ° C
+                        <span class="valeur-temperature"></span>° C
                     </label>
                 </div>
             </div>
         </div>
+        <!-- FIN Template d'affichage -->
     </div>
+
+    <!-- Modale informations -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5>Localisation</h5>
+                    <p>
+                        Cliquez sur l'icone 
+                        <i class="fas fa-map-marker-alt"></i>  
+                        à gauche de la barre de recherche pour 
+                        que le navigateur détecte votre position actuelle.
+                    </p>
+                    <hr>
+                    <h5>Barre de recherche</h5>
+                    <p>
+                        La barre de recherche vous propose automatiquement des villes en fonction de votre saisie grâce à 
+                        l'API 
+                        <a href="https://cloud.google.com/maps-platform/places" target="_blank">Google Maps Places</a>
+                    </p>
+                    <hr>
+                    <h5>Coordonnées géographique</h5>
+                    <p>
+                        L'API 
+                        <a href="https://openweathermap.org" target="_blank">Open Weather Map</a> 
+                        requière des coordonnées géographiques lat/lon.
+                        Chaque nom de ville saisi dans la barre de recherche est donc
+                        convertit en coordonées via l'API 
+                        <a href="https://opencagedata.com/" target="_blank">Open Cage Data</a> 
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FIN Modale informations -->
 </body>
 </html>

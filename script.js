@@ -73,15 +73,12 @@ function GetVille(lat, lon) {
 // Appel de l'API Geolocation pour récupérer la localisation de l'utilisateur
 function GetLocalisation() {
     if ( navigator.geolocation ) {
-        // geolocalisation supportée
-        console.log("Geolocalisation supportée")
-
         navigator.geolocation.getCurrentPosition(function(position) {
             GetVille(position.coords.latitude, position.coords.longitude)
         });
     } else {
         // geolocalisation non supportée
-        console.log("Geolocalisation non supportée")
+        alert("Geolocalisation non supportée par votre navigation")
     }
 }
 
@@ -153,10 +150,8 @@ function getIcon(id) {
 function timeConverter(UNIX_timestamp){
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-
     var month = months[a.getMonth()];
     var date = a.getDate();
-
     var time = date + ' ' + month + ' ';
     return time;
 }
