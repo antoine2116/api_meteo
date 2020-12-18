@@ -11,4 +11,6 @@ La barre de recherche vous propose automatiquement des villes en fonction de vot
  
 ### Coordonées géographiques
 L'API Open Weather Map requière des coordonnées géographiques lat/lon. Chaque nom de ville saisi dans la barre de recherche est donc convertit en coordonées via l'API Open Cage Data
-  
+
+### Détails
+Une fois votre recherche effectuée, cliquez sur un des jours pour afficher le détail de la journée
