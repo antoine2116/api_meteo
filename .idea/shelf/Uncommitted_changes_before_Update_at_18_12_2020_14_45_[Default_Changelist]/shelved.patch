@@ -1,0 +1,260 @@
+Index: script.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>$(document).ready(function() {\n    // Event click button\n    $('#btnValider').click(function (){\n        var ville = $(\"#iptVille\").val();\n        GetCoordonnees(ville);\n    });\n\n    // Event press enter\n    $('#iptVille').on('keypress',function(e) {\n        if(e.which == 13) {\n            var ville = $(\"#iptVille\").val();\n            GetCoordonnees(ville);\n        }\n    });\n});\n\n// Appel de l'API OpenCageData pour récupérer les coordonnées depuis le nom d'une ville\nfunction GetCoordonnees(ville) {\n    url = \"https://api.opencagedata.com/geocode/v1/json?\";\n    url += \"q=\"+ ville;\n    url += \"&key=7e92aabac4bb49ee80b4996073df7f0e\";\n    url += \"&limit=1\"\n    $.ajax({\n        url: url,\n        type: \"GET\",\n        success: function (response) {\n            console.log(response);\n            if (response.results.length) {\n                var lon = response.results[0].geometry.lng;\n                var lat = response.results[0].geometry.lat;\n                GetMeteo(lat,lon);\n\n                var ville = response.results[0].components.city;\n                var pays = response.results[0].components.country;\n                var region = response.results[0].components.county || response.results[0].components.state ;\n                var newVal = `${ville}, ${region}, ${pays}`;\n                $('#iptVille').val(newVal);\n            }\n\n        },\n        error : function (response){\n            alert(\"Une erreur est survenue..\");\n            console.log(response.error);\n        }\n    });\n}\n\n// Appel de l'API OpenWeater pour récupérer la météo de 7 prochains jours\nfunction GetMeteo(lat, lon) {\n    var url = \"https://api.openweathermap.org/data/2.5/onecall?\"\n    url += \"lat=\" + lat;\n    url += \"&lon=\" + lon;\n    url += \"&exclude=hourly,minutely,current&units=metric&appid=2c1a4159ad7198fa94a6142bd883a91e\"\n    $.ajax({\n        url: url,\n        type: \"GET\",\n        success: function (response) {\n            var meteo = [];\n            for (i = 0; i < 7; i++){\n                var jour = {\n                    id : parseInt(response.daily[i].weather[0].id),\n                    date : timeConverter(response.daily[i].dt),\n                    temperature : parseFloat(response.daily[i].temp.night).toFixed(1),\n                };\n                meteo.push(jour);\n            }\n            displayMeteo(meteo);\n        },\n        error : function (response){\n            alert(\"Une erreur est survenue..\");\n            console.log(response.error);\n        }\n    })\n}\n\n// Affiche le résultat de la recherche\nfunction displayMeteo(meteo) {\n    var cardsContainer = $('#cards-container');\n    var card = $('#card-template').first();\n    cardsContainer.empty();\n    for (var i = 0; i < 7; i++) {\n        var jour = meteo[i];\n        var newCard = card.clone();\n        $(newCard).css(\"display\", \"block\");\n        $(newCard).find(\".card-header\").text(jour.date);\n        $(newCard).find(\".valeur-temperature\").text(jour.temperature);\n        $(newCard).find(\"i\").removeClass();\n        $(newCard).find(\"i\").addClass(getIcon(jour.id));\n        cardsContainer.append(newCard);\n    }\n}\n\n// Récupère le nom de l'icone en fonction de l'id du type de météo\nfunction getIcon(id) {\n    if (id >= 200 && id <= 232) {\n        return \"fas fa-5x fa-bolt yellow\";\n    }\n    else if ((id >= 300 && id <= 321) || (id >= 500 && id <= 531)) {\n        return \"fas fa-5x fa-cloud-showers-heavy grey\";\n    }\n    else if (id >= 600 && id <= 622) {\n        return \"fas fa-5x fa-snowflake light-blue\";\n    }\n    else if (id == 800) {\n        return \"fas fa-5x fa-sun yellow\";\n    }\n    else if (id > 800) {\n        return \"fas fa-5x fa-cloud grey\";\n    }\n}\n\n// Permet de convertir un timestamp en date JS\nfunction timeConverter(UNIX_timestamp){\n    var a = new Date(UNIX_timestamp * 1000);\n    var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];\n\n    var month = months[a.getMonth()];\n    var date = a.getDate();\n\n    var time = date + ' ' + month + ' ';\n    return time;\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/script.js b/script.js
+--- a/script.js	(revision 4c35cdd8fc34bc88b6c240785669ff30ff663a44)
++++ b/script.js	(date 1608299117092)
+@@ -12,6 +12,7 @@
+             GetCoordonnees(ville);
+         }
+     });
++
+ });
+ 
+ // Appel de l'API OpenCageData pour récupérer les coordonnées depuis le nom d'une ville
+@@ -61,8 +62,14 @@
+                     id : parseInt(response.daily[i].weather[0].id),
+                     date : timeConverter(response.daily[i].dt),
+                     temperature : parseFloat(response.daily[i].temp.night).toFixed(1),
++                    sunRise : timeConverterHour(response.daily[i].sunrise),
++                    sunSet : timeConverterHour(response.daily[i].sunset),
++                    humidite : response.daily[i].humidity,
++                    vitesseVent : response.daily[i].wind_speed,
++                    ressenti : response.daily[i].feels_like.day
+                 };
+                 meteo.push(jour);
++                console.log(jour);
+             }
+             displayMeteo(meteo);
+         },
+@@ -86,8 +93,14 @@
+         $(newCard).find(".valeur-temperature").text(jour.temperature);
+         $(newCard).find("i").removeClass();
+         $(newCard).find("i").addClass(getIcon(jour.id));
++        $(newCard).data("sunRise", jour.sunRise);
++        $(newCard).data("dateJour", jour.date);
++        $(newCard).data("coucher",jour.sunSet);
++        $(newCard).data("humidite",jour.humidite);
++        $(newCard).data("ressenti",jour.ressenti);
+         cardsContainer.append(newCard);
+     }
++    initaliseModale();
+ }
+ 
+ // Récupère le nom de l'icone en fonction de l'id du type de météo
+@@ -121,3 +134,52 @@
+     return time;
+ }
+ 
++// Permet de convertir in timestamp en date complete JS
++
++function timeConverterHour(UNIX_timestamp){
++    var t = new Date(UNIX_timestamp*1000);
++
++    var hour = t.getHours();
++    var min = (t.getMinutes() < 10) ? "0"+t.getMinutes() : t.getMinutes();
++    var dateTime = hour+':'+min ;
++    return dateTime;
++}
++
++function initaliseModale() {
++    $('.card').click(function() {
++       var sunRise = $(this).data("sunRise");
++       var dateJ = $(this).data("dateJour");
++       var coucher = $(this).data("coucher");
++       var humidite = $(this).data("humidite");
++       var ressenti = $(this).data("ressenti");
++
++
++        $('#dateJ').text(dateJ);
++        $('#lever').text(sunRise);
++        $('#coucher').text(coucher);
++        $('#humidite').text(humidite);
++        $('#ressenti').text(ressenti);
++
++        $('#custom-close').click(function (){
++            $('#modale').dialog('close');
++        });
++
++
++
++
++        $("#modale").removeClass('hide').dialog({
++            resizable: false,
++            width: '340',
++            height: '400',
++            modal: true,
++            open: function() {
++              $('#overlay').show();
++            },
++            close: function() {
++                $('#overlay').hide();
++            }
++        });
++    });
++}
++
++
+Index: index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\n    <!-- Links CSS -->\n    <link rel=\"stylesheet\" href=\"assets/css/bootstrap.min.css\">\n    <link rel=\"stylesheet\" href=\"style.css\">\n\n    <!-- Scripts JS -->\n    <script src=\"https://kit.fontawesome.com/7b2ae56766.js\"></script>\n    <script src=\"assets/js/jquery-3.5.1.min.js\"></script>\n    <script src=\"script.js\"></script>\n\n    <title>API Météo</title>\n</head>\n\n<body class=\"bg-dark\">\n    <div class=\"container\">\n        <div class=\"row justify-content-center mt-3\">\n            <h1 class=\"text-white text-uppercase display-3\" style=\"letter-spacing: 5px\">\n                Api Météo\n            </h1>\n        </div>\n        <div class=\"row justify-content-center\" style=\"padding-top: 8vh\">\n            <input class=\"form-field\" id=\"iptVille\" placeholder=\"Choisir une ville\">\n            <button class=\"form-button\" id=\"btnValider\">Valider</button>\n        </div>\n        <div class=\"row justify-content-center\" id=\"cards-container\">\n            \n        </div>\n\n        <div class=\"card\" id=\"card-template\">\n            <div class=\"card-header text-center\">\n                <!-- Jour -->\n            </div>\n            <div class=\"card-body\">\n                <div class=\"row justify-content-center\">\n                    <i class=\"fas fa-5x card-icon\"></i> <!-- Icone -->\n                </div>\n                <div class=\"row justify-content-center\">\n                    <label class=\"card-temperature\">\n                        <span class=\"valeur-temperature\">\n                            <!-- Température -->\n                        </span>\n                        ° C\n                    </label>\n                </div>\n            </div>\n        </div>\n\n    </div>\n\n\n\n</body>\n</html>\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/index.html b/index.html
+--- a/index.html	(revision 4c35cdd8fc34bc88b6c240785669ff30ff663a44)
++++ b/index.html	(date 1608297621963)
+@@ -11,12 +11,14 @@
+     <!-- Scripts JS -->
+     <script src="https://kit.fontawesome.com/7b2ae56766.js"></script>
+     <script src="assets/js/jquery-3.5.1.min.js"></script>
++    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+     <script src="script.js"></script>
+ 
+     <title>API Météo</title>
+ </head>
+ 
+ <body class="bg-dark">
++    <div id="overlay"></div>
+     <div class="container">
+         <div class="row justify-content-center mt-3">
+             <h1 class="text-white text-uppercase display-3" style="letter-spacing: 5px">
+@@ -28,7 +30,7 @@
+             <button class="form-button" id="btnValider">Valider</button>
+         </div>
+         <div class="row justify-content-center" id="cards-container">
+-            
++
+         </div>
+ 
+         <div class="card" id="card-template">
+@@ -52,7 +54,40 @@
+ 
+     </div>
+ 
+-
++<div id="modale" class="hide modalCustom" >
++    <div class="row float-right mb-2" >
++        <span id="custom-close">&#10005;</span>
++    </div>
++    <h1 class="text-center marginTitle" id="dateJ">Titre modale</h1>
++    <hr>
++    <div class="row marginLeftRight">
++        <div class="col-3">Lever</div>
++        <div class="col-3"></div>
++        <div class="col-3">Coucher</div>
++        <div class="col-3"></div>
++    </div>
++    <div class="row marginLeftRight">
++        <div class="col-3 modalText" id="lever"></div>
++        <div class="col-3"></div>
++        <div class="col-3 modalText" id="coucher"></div>
++        <div class="col-3"></div>
++    </div>
++    <hr>
++    <div class="row marginTo marginLeftRight">
++        <div class="col-3">Humidité</div>
++        <div class="col-3"></div>
++        <div class="col-3">Ressenti</div>
++        <div class="col-3"></div>
++    </div>
++    <div class="row marginLeftRight">
++        <div class="col-3 modalText"><span id="humidite"></span> %</div>
++        <div class="col-3"></div>
++        <div class="col-5 modalText"><span id="ressenti"></span> °c</div>
++        <div class="col-1"></div>
++
++    </div>
++    <!--Contenu-->
++</div>
+ 
+ </body>
+ </html>
+Index: style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.container {\n  max-width: 90% !important;\n}\n\n.form-field {\n  font-family: inherit;\n  width: 35%;\n  border: 0;\n  border-bottom: 2px solid white;\n  outline: 0;\n  font-size: 1.3rem;\n  color: white;\n  background: transparent;\n}\n\n.form-button {\n  margin-left: 15px;\n  padding: 10px 20px;\n  background: transparent;\n  color: white;\n  border-radius: 30px;\n  font-size: 20px;\n  border: 1px solid  white;\n}\n\n.form-button:hover {\n  transition: background-color 0.25s linear;\n  background-color: white;\n  color: #212529;\n}\n\n\n.form-button:active, .form-button:focus {\n    outline: none;\n    transform: none;\n}\n\n#cards-container {\n  margin-top: 15vh;\n}\n\n.card {\n  display: none; \n  width: 12%;\n  margin-left: 10px;\n  margin-right: 10px;\n  border: 0;\n}\n\n.card-header {\n  background-color: #454545;\n  color: white !important;\n}\n\n.card-temperature {\n  margin-top: 3vh;\n  font-size: 30px;\n  font-weight: 600;\n  color: #454545 !important;\n}\n\n.yellow {\n  color : #fac907;\n}\n\n.light-blue {\n  color: #59d6ff;\n}\n\n.grey {\n  color: #949494;\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/style.css b/style.css
+--- a/style.css	(revision 4c35cdd8fc34bc88b6c240785669ff30ff663a44)
++++ b/style.css	(date 1608298798165)
+@@ -47,6 +47,10 @@
+   border: 0;
+ }
+ 
++.card-header:hover {
++  cursor: pointer;
++}
++
+ .card-header {
+   background-color: #454545;
+   color: white !important;
+@@ -69,4 +73,59 @@
+ 
+ .grey {
+   color: #949494;
+-}
+\ No newline at end of file
++}
++
++.hide {
++  display: none !important;
++}
++
++.modalCustom {
++  background-color: #F3F3F3;
++  border-radius: 10px;
++  border: solid 1px #EFEFEF;
++}
++
++.marginTo {
++  margin-top: 20px;
++}
++.modalText {
++  font-size: 20px;
++  font-weight: 500;
++  color: #454545 !important;
++}
++
++.marginLeftRight{
++  margin-left: 10px;
++  margin-right: 10px;
++}
++
++.marginTitle{
++  margin-top: 10px;
++}
++
++#overlay {
++  background: #808080;
++  display: none;
++  position: absolute;
++  top: 0;
++  right: 0;
++  bottom: 0;
++  left: 0;
++  opacity: 0.5;
++}
++
++.ui-dialog-titlebar-close {
++  display: none;
++}
++
++#custom-close {
++  margin-bottom: 10px;
++  margin-right: 25px;
++  color: #a81616 !important;
++  font-size: 22px !important;
++  font-weight: bolder;
++}
++
++#custom-close:hover {
++  cursor: pointer;
++}
