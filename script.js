@@ -18,8 +18,8 @@ $(document).ready(function() {
         GetLocalisation();
     });
 
-    // Initialise Autocomplete 
-    var element = document.getElementById("iptVille");  
+    // Initialise Autocomplete
+    var element = document.getElementById("iptVille");
     var autocomplete = new google.maps.places.Autocomplete(element, { types: ['geocode'] });
 });
 
@@ -98,6 +98,11 @@ function GetMeteo(lat, lon) {
                     id : parseInt(response.daily[i].weather[0].id),
                     date : timeConverter(response.daily[i].dt),
                     temperature : parseFloat(response.daily[i].temp.night).toFixed(1),
+                    sunRise : timeConverterHour(response.daily[i].sunrise),
+                    sunSet : timeConverterHour(response.daily[i].sunset),
+                    humidite : response.daily[i].humidity,
+                    vitesseVent : response.daily[i].wind_speed,
+                    ressenti : response.daily[i].feels_like.day
                 };
                 meteo.push(jour);
             }
@@ -123,8 +128,14 @@ function displayMeteo(meteo) {
         $(newCard).find(".valeur-temperature").text(jour.temperature);
         $(newCard).find("i").removeClass();
         $(newCard).find("i").addClass(getIcon(jour.id));
+        $(newCard).data("sunRise", jour.sunRise);
+        $(newCard).data("dateJour", jour.date);
+        $(newCard).data("coucher",jour.sunSet);
+        $(newCard).data("humidite",jour.humidite);
+        $(newCard).data("ressenti",jour.ressenti);
         cardsContainer.append(newCard);
     }
+    initaliseModale();
 }
 
 // Récupère le nom de l'icone en fonction de l'id du type de météo
@@ -150,11 +161,63 @@ function getIcon(id) {
 function timeConverter(UNIX_timestamp){
     var a = new Date(UNIX_timestamp * 1000);
     var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
     var month = months[a.getMonth()];
     var date = a.getDate();
+
     var time = date + ' ' + month + ' ';
     return time;
 }
+
+// Permet de convertir in timestamp en date complete JS
+
+function timeConverterHour(UNIX_timestamp){
+    var t = new Date(UNIX_timestamp*1000);
+
+    var hour = t.getHours();
+    var min = (t.getMinutes() < 10) ? "0"+t.getMinutes() : t.getMinutes();
+    var dateTime = hour+':'+min ;
+    return dateTime;
+}
+
+function initaliseModale() {
+    $('.card').click(function() {
+       var sunRise = $(this).data("sunRise");
+       var dateJ = $(this).data("dateJour");
+       var coucher = $(this).data("coucher");
+       var humidite = $(this).data("humidite");
+       var ressenti = $(this).data("ressenti");
+
+
+        $('#dateJ').text(dateJ);
+        $('#lever').text(sunRise);
+        $('#coucher').text(coucher);
+        $('#humidite').text(humidite);
+        $('#ressenti').text(ressenti);
+
+        $('#custom-close').click(function (){
+            $('#modale').dialog('close');
+        });
+
+
+
+
+        $("#modale").removeClass('hide').dialog({
+            resizable: false,
+            width: '340',
+            height: '400',
+            modal: true,
+            open: function() {
+              $('#overlay').show();
+            },
+            close: function() {
+                $('#overlay').hide();
+            }
+        });
+    });
+}
+
+
 
 // Permet de remplir l'input avec les données complète de la ville
 function fillInput(details) {
