@@ -60,7 +60,7 @@ button:active, button:focus {
   border: 0;
 }
 
-.card-header:hover {
+.card-header:hover, .card:hover {
   cursor: pointer;
 }
 

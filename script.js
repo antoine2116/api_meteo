@@ -33,7 +33,6 @@ function GetCoordonnees(ville) {
         url: url,
         type: "GET",
         success: function (response) {
-            console.log(response);
             if (response.results.length) {
                 var lon = response.results[0].geometry.lng;
                 var lat = response.results[0].geometry.lat;
@@ -97,7 +96,7 @@ function GetMeteo(lat, lon) {
                 var jour = {
                     id : parseInt(response.daily[i].weather[0].id),
                     date : timeConverter(response.daily[i].dt),
-                    temperature : parseFloat(response.daily[i].temp.night).toFixed(1),
+                    temperature : Math.floor(parseFloat(response.daily[i].temp.night)),
                     sunRise : timeConverterHour(response.daily[i].sunrise),
                     sunSet : timeConverterHour(response.daily[i].sunset),
                     humidite : response.daily[i].humidity,
@@ -135,7 +134,7 @@ function displayMeteo(meteo) {
         $(newCard).data("ressenti",jour.ressenti);
         cardsContainer.append(newCard);
     }
-    initaliseModale();
+    initaliseModaleDetails();
 }
 
 // Récupère le nom de l'icone en fonction de l'id du type de météo
@@ -169,8 +168,7 @@ function timeConverter(UNIX_timestamp){
     return time;
 }
 
-// Permet de convertir in timestamp en date complete JS
-
+// Permet de convertir in timestamp en date heure JS
 function timeConverterHour(UNIX_timestamp){
     var t = new Date(UNIX_timestamp*1000);
 
@@ -180,35 +178,34 @@ function timeConverterHour(UNIX_timestamp){
     return dateTime;
 }
 
-function initaliseModale() {
+// Initialise l'ouverture de la modale des détails
+function initaliseModaleDetails() {
     $('.card').click(function() {
-       var sunRise = $(this).data("sunRise");
-       var dateJ = $(this).data("dateJour");
-       var coucher = $(this).data("coucher");
-       var humidite = $(this).data("humidite");
-       var ressenti = $(this).data("ressenti");
+        // On récupère les données stockées dans la card
+        var sunRise = $(this).data("sunRise");
+        var dateJ = $(this).data("dateJour");
+        var coucher = $(this).data("coucher");
+        var humidite = $(this).data("humidite");
+        var ressenti = $(this).data("ressenti");
 
-
+        // On met à jour les données de la modale
         $('#dateJ').text(dateJ);
         $('#lever').text(sunRise);
         $('#coucher').text(coucher);
         $('#humidite').text(humidite);
         $('#ressenti').text(ressenti);
 
-        $('#custom-close').click(function (){
-            $('#modale').dialog('close');
-        });
-
-
-
-
+        // Propritées de la modale 
         $("#modale").removeClass('hide').dialog({
             resizable: false,
             width: '340',
             height: '400',
             modal: true,
             open: function() {
-              $('#overlay').show();
+                $('#custom-close').click(function (){
+                    $('#modale').dialog('close');
+                });
+                $('#overlay').show();
             },
             close: function() {
                 $('#overlay').hide();
@@ -217,9 +214,7 @@ function initaliseModale() {
     });
 }
 
-
-
-// Permet de remplir l'input avec les données complète de la ville
+// Permet de remplir l'input avec les données complètes de la ville
 function fillInput(details) {
     if (details != null) {
         var ville = details.city || details.town ||details.municipality;

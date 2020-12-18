@@ -17,7 +17,7 @@
     <script src="https://kit.fontawesome.com/7b2ae56766.js"></script>
     <script src="assets/js/jquery-3.5.1.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="assets/js/jquery-ui.min.js"></script>
     <script src="script.js"></script>
     <!-- FIN Scripts JS -->
 
@@ -79,10 +79,12 @@
     </div>
 
     <!-- Modale informations -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
+
                     <h5>Localisation</h5>
                     <p>
                         Cliquez sur l'icone
@@ -93,7 +95,8 @@
                     <hr>
                     <h5>Barre de recherche</h5>
                     <p>
-                        La barre de recherche vous propose automatiquement des villes en fonction de votre saisie grâce à
+                        La barre de recherche vous propose automatiquement des villes en fonction de votre saisie grâce
+                        à
                         l'API
                         <a href="https://cloud.google.com/maps-platform/places" target="_blank">Google Maps Places</a>
                     </p>
@@ -107,47 +110,52 @@
                         convertit en coordonées via l'API
                         <a href="https://opencagedata.com/" target="_blank">Open Cage Data</a>
                     </p>
+                    <hr>
+                    <h5>Détails</h5>
+                    <p>
+                        Une fois votre recherche effectuée, cliquez sur un des jours pour afficher le détail de la
+                        journée
+                    </p>
                 </div>
             </div>
         </div>
     </div>
     <!-- FIN Modale informations -->
-<div id="modale" class="hide modalCustom" >
-    <div class="row float-right mb-2" >
-        <span id="custom-close">&#10005;</span>
-    </div>
-    <h1 class="text-center marginTitle" id="dateJ">Titre modale</h1>
-    <hr>
-    <div class="row marginLeftRight">
-        <div class="col-3">Lever</div>
-        <div class="col-3"></div>
-        <div class="col-3">Coucher</div>
-        <div class="col-3"></div>
-    </div>
-    <div class="row marginLeftRight">
-        <div class="col-3 modalText" id="lever"></div>
-        <div class="col-3"></div>
-        <div class="col-3 modalText" id="coucher"></div>
-        <div class="col-3"></div>
-    </div>
-    <hr>
-    <div class="row marginTo marginLeftRight">
-        <div class="col-3">Humidité</div>
-        <div class="col-3"></div>
-        <div class="col-3">Ressenti</div>
-        <div class="col-3"></div>
-    </div>
-    <div class="row marginLeftRight">
-        <div class="col-3 modalText"><span id="humidite"></span> %</div>
-        <div class="col-3"></div>
-        <div class="col-5 modalText"><span id="ressenti"></span> °c</div>
-        <div class="col-1"></div>
 
-    </div>
-    <!--Contenu-->
-</div>
+    <!-- Modale détails -->
+    <div id="modale" class="hide modalCustom">
+        <div class="row float-right mb-2">
+            <span id="custom-close">&#10005;</span>
+        </div>
+        <h1 class="text-center marginTitle" id="dateJ">Titre modale</h1>
+        <hr>
+        <div class="row marginLeftRight">
+            <div class="col-3">Lever</div>
+            <div class="col-3"></div>
+            <div class="col-3">Coucher</div>
+            <div class="col-3"></div>
+        </div>
+        <div class="row marginLeftRight">
+            <div class="col-3 modalText" id="lever"></div>
+            <div class="col-3"></div>
+            <div class="col-3 modalText" id="coucher"></div>
+            <div class="col-3"></div>
+        </div>
+        <hr>
+        <div class="row marginTo marginLeftRight">
+            <div class="col-3">Humidité</div>
+            <div class="col-3"></div>
+            <div class="col-3">Ressenti</div>
+            <div class="col-3"></div>
+        </div>
+        <div class="row marginLeftRight">
+            <div class="col-3 modalText"><span id="humidite"></span> %</div>
+            <div class="col-3"></div>
+            <div class="col-5 modalText"><span id="ressenti"></span> °c</div>
+            <div class="col-1"></div>
 
+        </div>
+    </div>
+    <!-- FIN Modale détails -->
 </body>
 </html>
-
-
